@@ -10,8 +10,11 @@ func CORSMiddleware() gin.HandlerFunc {
 
 	allowedOrigins := map[string]bool{
 		"http://localhost:3000": true, // React dev server
-		"http://127.0.0.1:3000": true, // Alternative localhost
-		"https://gealit.ru":     true, // Production domain
+		//"http://127.0.0.1:3000": true, // Alternative localhost
+		//"http://gealit.ru":       true, // Production domain
+		//"https://gealit.ru":      true, // Production domain
+		//"http://gealit.ru:3680":  true, // Production domain
+		//"https://gealit.ru:3680": true, // Production domain
 	}
 
 	allowedHeaders := "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With"

@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"main/models"
+	"main/internal/models"
 	"os"
 	"time"
 
@@ -11,7 +11,7 @@ import (
 func GenerateTokens(user *models.User) (accessToken string, refreshToken string, err error) {
 	secretKey := []byte(os.Getenv("SECRET_KEY"))
 	// Access Token (short-lived, 15-30 minutes)
-	accessExpirationTime := time.Now().Add(2 * time.Minute)
+	accessExpirationTime := time.Now().Add(15 * time.Minute)
 	accessClaims := &models.Claims{
 		Email: user.Email,
 		Role:  user.Role,
@@ -26,7 +26,7 @@ func GenerateTokens(user *models.User) (accessToken string, refreshToken string,
 	}
 
 	// Refresh Token (long-lived, 7-30 days)
-	refreshExpirationTime := time.Now().Add(7 * 24 * time.Hour)
+	refreshExpirationTime := time.Now().Add(30 * 24 * time.Hour)
 	refreshClaims := &models.RefreshClaims{
 		Email:  user.Email,
 		UserID: uint64(user.ID),

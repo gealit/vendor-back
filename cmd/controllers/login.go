@@ -1,8 +1,9 @@
 package controllers
 
 import (
-	"main/models"
-	"main/utils"
+	"main/cmd/utils"
+	"main/internal/database"
+	"main/internal/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,7 +19,7 @@ func Login(c *gin.Context) {
 
 	var existingUser models.User
 
-	models.DB.Where("email = ?", user.Email).First(&existingUser)
+	database.DB.Where("email = ?", user.Email).First(&existingUser)
 
 	if existingUser.ID == 0 {
 		c.JSON(400, gin.H{"error": "user does not exist"})

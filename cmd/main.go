@@ -5,9 +5,9 @@ import (
 	"log"
 	"os"
 
-	"main/middlewares"
-	"main/models"
-	"main/routes"
+	"main/cmd/middlewares"
+	"main/cmd/routes"
+	"main/internal/database"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -25,7 +25,7 @@ func main() {
 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
 	router := gin.Default()
 
-	config := models.Config{
+	config := database.Config{
 		Host:     os.Getenv("DB_HOST"),
 		Port:     os.Getenv("DB_PORT"),
 		User:     os.Getenv("DB_USER"),
@@ -35,7 +35,7 @@ func main() {
 	}
 
 	// Initialize DB
-	models.InitDB(config)
+	database.InitDB(config)
 
 	// Apply middleware
 	router.Use(middlewares.CORSMiddleware())

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"main/utils"
+	"main/cmd/utils"
 
 	"github.com/gin-gonic/gin"
 )

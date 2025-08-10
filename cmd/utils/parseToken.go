@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 	"log"
-	"main/models"
+	"main/internal/models"
 	"os"
 
 	"github.com/dgrijalva/jwt-go"
@@ -12,6 +12,7 @@ import (
 func ParseAccessToken(tokenString string) (*models.Claims, error) {
 
 	secretKey := []byte(os.Getenv("SECRET_KEY"))
+	// secretKey := "123weq4321erqw"
 
 	claims := &models.Claims{}
 
@@ -31,7 +32,7 @@ func ParseAccessToken(tokenString string) (*models.Claims, error) {
 		fmt.Printf("UserRole: %v, Email: %v\n", claims.Role, claims.Email)
 		fmt.Printf("Expires at: %v\n", claims.ExpiresAt)
 	} else {
-		log.Fatal("Invalid token")
+		log.Printf("Invalid token. Expires at: %v\n", claims.ExpiresAt)
 	}
 
 	return claims, nil

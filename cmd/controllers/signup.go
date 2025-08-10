@@ -1,8 +1,11 @@
 package controllers
 
 import (
-	"main/models"
-	"main/utils"
+	"fmt"
+	"main/cmd/utils"
+	"main/internal/database"
+	"main/internal/models"
+	"main/internal/services"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +20,7 @@ func Signup(c *gin.Context) {
 
 	var existingUser models.User
 
-	models.DB.Where("email = ?", user.Email).First(&existingUser)
+	database.DB.Where("email = ?", user.Email).First(&existingUser)
 
 	if existingUser.ID != 0 {
 		c.JSON(400, gin.H{"error": "user already exists"})
@@ -32,7 +35,13 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	models.DB.Create(&user)
+	user.Role = "user"
+
+	fmt.Println(user)
+
+	s := services.NewUserService(database.DB)
+
+	s.CreateUserWithProfile(&user, &models.Profile{})
 
 	c.JSON(200, gin.H{"success": "user created"})
 }

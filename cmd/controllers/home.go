@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"log"
-	"main/utils"
+	"main/cmd/utils"
 
 	"github.com/gin-gonic/gin"
 )

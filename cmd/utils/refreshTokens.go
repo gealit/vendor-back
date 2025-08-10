@@ -2,7 +2,8 @@ package utils
 
 import (
 	"fmt"
-	"main/models"
+	"main/internal/database"
+	"main/internal/models"
 	"net/http"
 	"os"
 	"time"
@@ -10,41 +11,41 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RefreshTokens(c *gin.Context) string {
+func RefreshTokens(c *gin.Context) (string, error) {
 
 	refreshToken, err := c.Cookie("refresh_token")
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Refresh token required"})
-		return "error"
+		return "error", err
 	}
 
 	claims, err := ParseRefreshToken(refreshToken)
 	if err != nil {
 		fmt.Printf("Failed to parse refresh token.")
-		return "error"
+		return "error", err
 	}
 
 	// Get user from DB
 	var existingUser models.User
 
-	models.DB.Where("id = ?", claims.UserID).First(&existingUser)
+	database.DB.Where("id = ?", claims.UserID).First(&existingUser)
 
 	if existingUser.ID == 0 {
 		fmt.Printf("user does not exist with id: %v", claims.UserID)
-		return "error"
+		return "error", err
 	}
 
 	// Generate new tokens
 	newAccessToken, newRefreshToken, err := GenerateTokens(&existingUser)
 	if err != nil {
 		fmt.Printf("Failed to generate tokens")
-		return "error"
+		return "error", err
 	}
 
 	// Set new cookies
 	SetTokenCookies(c, newAccessToken, newRefreshToken)
 
-	return newAccessToken
+	return newAccessToken, nil
 }
 
 func SetTokenCookies(c *gin.Context, accessToken, refreshToken string) {
@@ -66,8 +67,8 @@ func SetTokenCookies(c *gin.Context, accessToken, refreshToken string) {
 	c.SetCookie(
 		"refresh_token",
 		refreshToken,
-		int((7 * 24 * time.Hour).Seconds()), // expires in 7 days
-		"/",                                 // only accessible on refresh endpoint
+		int((30 * 24 * time.Hour).Seconds()), // expires in 7 days
+		"/",                                  // only accessible on refresh endpoint
 		os.Getenv("HOST"),
 		false, // secure
 		true,  // httpOnly

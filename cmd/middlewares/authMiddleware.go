@@ -2,8 +2,8 @@ package middlewares
 
 import (
 	"fmt"
-	"main/models"
-	"main/utils"
+	"main/cmd/utils"
+	"main/internal/models"
 	"net/http"
 	"os"
 	"time"
@@ -48,9 +48,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			oldClaims, _ := token.Claims.(*models.Claims)
 			// If access token is expired, try to refresh it
 			if oldClaims.ExpiresAt < time.Now().Unix() {
-
 				utils.RefreshTokens(c)
-
 				return
 			}
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
@@ -61,10 +59,6 @@ func AuthMiddleware() gin.HandlerFunc {
 		// Set user in context
 		c.Set("userEmail", claims.Email)
 		c.Set("userRole", claims.Role)
-		fmt.Println("newContext: ", c.Request.Context())
-		new_access, _ := c.Cookie("access_token")
-		new_refresh, _ := c.Cookie("refresh_token")
-		fmt.Println("new_access_token: ", new_access, "new_refresh_token: ", new_refresh)
 		c.Next()
 	}
 }

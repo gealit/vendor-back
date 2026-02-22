@@ -58,7 +58,7 @@ func SetTokenCookies(c *gin.Context, accessToken, refreshToken string) {
 		accessToken,
 		int((15 * time.Minute).Seconds()), // expires in 15 mins
 		"/",                               // only accessible on refresh endpoint
-		"",                                // os.Getenv("HOST"),
+		"gealit.ru",                       // os.Getenv("HOST"),
 		true,                              // false secure
 		true,                              // httpOnly
 	)
@@ -69,7 +69,7 @@ func SetTokenCookies(c *gin.Context, accessToken, refreshToken string) {
 		refreshToken,
 		int((30 * 24 * time.Hour).Seconds()), // expires in 7 days
 		"/",                                  // only accessible on refresh endpoint
-		"",                                   // os.Getenv("HOST"),
+		"gealit.ru",                          // os.Getenv("HOST"),
 		true,                                 // false secure
 		true,                                 // httpOnly
 	)

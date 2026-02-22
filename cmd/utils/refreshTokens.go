@@ -60,7 +60,7 @@ func SetTokenCookies(c *gin.Context, accessToken, refreshToken string) {
 		c.SetSameSite(http.SameSiteStrictMode)
 	}
 
-	domain := ""
+	domain := "localhost"
 
 	secure := false
 

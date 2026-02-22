@@ -5,6 +5,7 @@ import (
 	"main/internal/database"
 	"main/internal/models"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -49,18 +50,17 @@ func RefreshTokens(c *gin.Context) (string, error) {
 
 func SetTokenCookies(c *gin.Context, accessToken, refreshToken string) {
 	// Secure, HttpOnly cookies
-	// c.SetSameSite(http.SameSiteStrictMode)
-	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetSameSite(http.SameSiteStrictMode)
 
 	// Access Token Cookie (short-lived)
 	c.SetCookie(
 		"access_token",
 		accessToken,
 		int((15 * time.Minute).Seconds()), // expires in 15 mins
-		"/",                               // only accessible on refresh endpoint
-		"gealit.ru",                       // os.Getenv("HOST"),
-		true,                              // false secure
-		true,                              // httpOnly
+		"/",
+		os.Getenv("HOST"),
+		false, // secure
+		true,  // httpOnly
 	)
 
 	// Refresh Token Cookie (long-lived)
@@ -69,8 +69,8 @@ func SetTokenCookies(c *gin.Context, accessToken, refreshToken string) {
 		refreshToken,
 		int((30 * 24 * time.Hour).Seconds()), // expires in 7 days
 		"/",                                  // only accessible on refresh endpoint
-		"gealit.ru",                          // os.Getenv("HOST"),
-		true,                                 // false secure
-		true,                                 // httpOnly
+		os.Getenv("HOST"),
+		false, // secure
+		true,  // httpOnly
 	)
 }

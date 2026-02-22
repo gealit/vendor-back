@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"main/cmd/middlewares"
 	"main/cmd/routes"
 	"main/internal/database"
 
@@ -38,7 +37,7 @@ func main() {
 	database.InitDB(config)
 
 	// Apply middleware
-	router.Use(middlewares.CORSMiddleware())
+	// router.Use(middlewares.CORSMiddleware())
 
 	// Load the routes
 	routes.AuthRoutes(router)

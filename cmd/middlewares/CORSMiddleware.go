@@ -16,6 +16,8 @@ func CORSMiddleware() gin.HandlerFunc {
 		"https://gealit.ru":      true, // Production domain
 		"http://gealit.ru:3680":  true, // Production domain
 		"https://gealit.ru:3680": true, // Production domain
+		"http://gealit.ru:3000":  true, // Production domain
+		"https://gealit.ru:3000": true, // Production domain
 		"http://gealit.ru:8080":  true, //
 		"https://gealit.ru:8080": true, //
 		"http://localhost:8080":  true, // На всякий случай

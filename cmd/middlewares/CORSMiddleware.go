@@ -32,8 +32,7 @@ func CORSMiddleware() gin.HandlerFunc {
 		fmt.Println("CORSMiddleware origin:", origin)
 
 		if allowedOrigins[origin] {
-			c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-			// c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
+			c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
 			c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		} else if origin == "" {
 			c.Writer.Header().Set("Access-Control-Allow-Origin", c.Request.Host)

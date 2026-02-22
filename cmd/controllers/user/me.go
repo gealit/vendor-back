@@ -1,7 +1,6 @@
 package user
 
 import (
-	"log"
 	"main/cmd/utils"
 	"net/http"
 
@@ -9,36 +8,16 @@ import (
 )
 
 func GetMe(c *gin.Context) {
-	// Получаем токен из куки
-	accessToken, err := c.Cookie("access_token")
-	if err != nil {
-		log.Println("Cannot parse cookies:", err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-		return
-	}
 
-	// Парсим токен
-	claims, err := utils.ParseAccessToken(accessToken)
-	if err != nil {
-		log.Println("Cannot parse token:", err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-		return
-	}
+	user_id, _ := utils.GetUserID(c)
+	user_email, _ := utils.GetUserEmail(c)
+	user_role, _ := utils.GetUserRole(c)
 
-	// Проверяем роль
-	if claims.Role != "user" && claims.Role != "admin" {
-		log.Println("Invalid role:", claims.Role)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-		return
-	}
-
-	// Возвращаем данные пользователя
 	c.JSON(http.StatusOK, gin.H{
 		"user": gin.H{
-			"id":    claims.UserID,
-			"email": claims.Email,
-			"role":  claims.Role,
-			// добавьте другие поля, которые есть в claims
+			"id":    user_id,
+			"email": user_email,
+			"role":  user_role,
 		},
 	})
 }

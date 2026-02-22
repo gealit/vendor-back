@@ -39,7 +39,6 @@ func main() {
 
 	// Apply middleware
 	router.Use(middlewares.CORSMiddleware())
-	// router.Use(middlewares.AuthMiddleware())
 
 	// Load the routes
 	routes.AuthRoutes(router)

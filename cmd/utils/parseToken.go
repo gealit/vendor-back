@@ -12,7 +12,6 @@ import (
 func ParseAccessToken(tokenString string) (*models.Claims, error) {
 
 	secretKey := []byte(os.Getenv("SECRET_KEY"))
-	// secretKey := "123weq4321erqw"
 
 	claims := &models.Claims{}
 

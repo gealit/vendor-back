@@ -33,16 +33,10 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Parse access token
 		claims := &models.Claims{}
 		token, err := jwt.ParseWithClaims(accessToken, claims, func(token *jwt.Token) (interface{}, error) {
 			return secretKey, nil
 		})
-
-		if claims, ok := token.Claims.(*models.Claims); ok && token.Valid {
-			fmt.Printf("UserRole: %v, Email: %v\n", claims.Role, claims.Email)
-			fmt.Printf("Expires at: %v\n", claims.ExpiresAt)
-		}
 
 		if err != nil || !token.Valid {
 			oldClaims, _ := token.Claims.(*models.Claims)
@@ -56,9 +50,9 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Set user in context
-		c.Set("userEmail", claims.Email)
+		c.Set("userID", claims.UserID)
 		c.Set("userRole", claims.Role)
+		c.Set("userEmail", claims.Email)
 		c.Next()
 	}
 }

@@ -1,30 +1,43 @@
 package middlewares
 
 import (
+	"log"
 	"main/cmd/utils"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func IsAuthorized() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		cookie, err := c.Cookie("access_token")
-
+		accessToken, err := c.Cookie("access_token")
 		if err != nil {
-			c.JSON(401, gin.H{"error": "unauthorized"})
+			log.Println("Cannot parse cookies:", err)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 			c.Abort()
 			return
 		}
 
-		claims, err := utils.ParseAccessToken(cookie)
-
+		// Парсим токен
+		claims, err := utils.ParseAccessToken(accessToken)
 		if err != nil {
-			c.JSON(401, gin.H{"error": "unauthorized"})
+			log.Println("Cannot parse token:", err)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 			c.Abort()
 			return
 		}
 
-		c.Set("role", claims.Role)
+		// Проверяем роль
+		if claims.Role != "user" && claims.Role != "admin" {
+			log.Println("Invalid role:", claims.Role)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+			c.Abort()
+			return
+		}
+
+		c.Set("userId", claims.UserID)
+		c.Set("userRole", claims.Role)
+		c.Set("userEmail", claims.Email)
 		c.Next()
 	}
 }

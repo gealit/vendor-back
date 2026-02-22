@@ -49,7 +49,9 @@ func RefreshTokens(c *gin.Context) (string, error) {
 
 func SetTokenCookies(c *gin.Context, accessToken, refreshToken string) {
 	// Secure, HttpOnly cookies
-	c.SetSameSite(http.SameSiteStrictMode)
+	// c.SetSameSite(http.SameSiteStrictMode)
+	c.SetSameSite(http.SameSiteNoneMode)
+	// c.SetSameSite(http.SameSiteLaxMode)
 
 	domain := "" // os.Getenv("HOST") Важно: пустой для localhost
 

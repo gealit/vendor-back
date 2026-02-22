@@ -13,8 +13,9 @@ func GenerateTokens(user *models.User) (accessToken string, refreshToken string,
 	// Access Token (short-lived, 15-30 minutes)
 	accessExpirationTime := time.Now().Add(15 * time.Minute)
 	accessClaims := &models.Claims{
-		Email: user.Email,
-		Role:  user.Role,
+		UserID: uint64(user.ID),
+		Email:  user.Email,
+		Role:   user.Role,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: accessExpirationTime.Unix(),
 		},

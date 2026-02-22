@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"main/internal/database"
 	"main/internal/models"
 	"net/http"
@@ -47,18 +48,22 @@ func RefreshTokens(c *gin.Context) (string, error) {
 	return newAccessToken, nil
 }
 
+// c.SetSameSite(http.SameSiteNoneMode)
+// c.SetSameSite(http.SameSiteLaxMode)
+
 func SetTokenCookies(c *gin.Context, accessToken, refreshToken string) {
-	// Secure, HttpOnly cookies
-	// c.SetSameSite(http.SameSiteStrictMode)
-	c.SetSameSite(http.SameSiteNoneMode)
-	// c.SetSameSite(http.SameSiteLaxMode)
+	origin := c.Request.Header.Get("Origin")
+	log.Println("SetTokenCookies origin: ", origin)
+	if origin == "http://localhost:3000" {
+		c.SetSameSite(http.SameSiteLaxMode) // Lax для локальной разработки
+	} else {
+		c.SetSameSite(http.SameSiteStrictMode)
+	}
 
-	domain := "" // os.Getenv("HOST") Важно: пустой для localhost
+	domain := ""
 
-	// Secure должен быть false для разработки по HTTP
-	secure := false // true только для HTTPS в продакшене
+	secure := false
 
-	// Access Token Cookie (short-lived)
 	c.SetCookie(
 		"access_token",
 		accessToken,
@@ -69,7 +74,6 @@ func SetTokenCookies(c *gin.Context, accessToken, refreshToken string) {
 		true,   // httpOnly
 	)
 
-	// Refresh Token Cookie (long-lived)
 	c.SetCookie(
 		"refresh_token",
 		refreshToken,
